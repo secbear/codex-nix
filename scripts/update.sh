@@ -16,8 +16,8 @@ PACKAGE_NIX="${SCRIPT_DIR}/../package.nix"
 PLATFORMS=(
   "aarch64-apple-darwin"
   "x86_64-apple-darwin"
-  "x86_64-unknown-linux-gnu"
-  "aarch64-unknown-linux-gnu"
+  "x86_64-unknown-linux-musl"
+  "aarch64-unknown-linux-musl"
 )
 
 current_version() {
