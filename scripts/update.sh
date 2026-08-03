@@ -61,9 +61,15 @@ echo ""
 
 echo "Fetching SHA256 hashes..."
 for platform in "${PLATFORMS[@]}"; do
-  hash=$(nix-prefetch-url \
-    "https://github.com/${REPO}/releases/download/rust-v${NEW_VERSION}/codex-${platform}.tar.gz" \
-    2>/dev/null | tail -1)
+  url="https://github.com/${REPO}/releases/download/rust-v${NEW_VERSION}/codex-${platform}.tar.gz"
+
+  # nix-prefetch-url writes progress to stderr and the hash to stdout; keep
+  # stderr so a renamed or missing upstream target says why it failed.
+  if ! hash=$(nix-prefetch-url "$url" | tail -1) || [[ -z "$hash" ]]; then
+    echo "error: could not fetch hash for ${platform}" >&2
+    echo "       ${url}" >&2
+    exit 1
+  fi
 
   echo "  ${platform}: ${hash}"
 

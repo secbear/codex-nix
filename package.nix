@@ -2,10 +2,6 @@
   lib,
   stdenv,
   fetchurl,
-  autoPatchelfHook,
-  zlib,
-  libcap,
-  openssl,
 }:
 
 let
@@ -28,8 +24,6 @@ let
 
   platform = platformMap.${stdenv.hostPlatform.system}
     or (throw "Unsupported system: ${stdenv.hostPlatform.system}");
-
-  isLinux = stdenv.hostPlatform.isLinux;
 in
 
 stdenv.mkDerivation {
@@ -42,15 +36,6 @@ stdenv.mkDerivation {
   };
 
   sourceRoot = ".";
-
-  nativeBuildInputs = lib.optionals isLinux [ autoPatchelfHook ];
-
-  buildInputs = lib.optionals isLinux [
-    stdenv.cc.cc.lib
-    zlib
-    libcap
-    openssl
-  ];
 
   dontConfigure = true;
   dontBuild = true;
@@ -65,7 +50,9 @@ stdenv.mkDerivation {
     runHook postInstall
   '';
 
-  dontFixup = !isLinux;
+  # Upstream ships statically linked musl binaries on Linux and Mach-O
+  # executables on Darwin: nothing to patch, strip, or link against.
+  dontFixup = true;
 
   meta = {
     description = "OpenAI Codex CLI — an AI coding agent for your terminal";
