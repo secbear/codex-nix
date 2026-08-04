@@ -8,10 +8,12 @@
 
   outputs = inputs:
     inputs.flake-parts.lib.mkFlake { inherit inputs; } {
+      # x86_64-darwin is absent deliberately: nixpkgs 26.11 dropped it, so
+      # instantiating pkgs for that system throws. package.nix still carries
+      # its hash, so the overlay keeps working on nixpkgs 26.05.
       systems = [
         "x86_64-linux"
         "aarch64-linux"
-        "x86_64-darwin"
         "aarch64-darwin"
       ];
 

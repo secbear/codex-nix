@@ -17,7 +17,7 @@ jobs:
   check-update:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
@@ -47,11 +47,11 @@ jobs:
           echo "Latest version: $LATEST_VERSION"
 
           if [ "$CURRENT_VERSION" != "$LATEST_VERSION" ]; then
-            echo "new_version=$LATEST_VERSION" >> $GITHUB_OUTPUT
-            echo "current_version=$CURRENT_VERSION" >> $GITHUB_OUTPUT
-            echo "update_needed=true" >> $GITHUB_OUTPUT
+            echo "new_version=$LATEST_VERSION" >> "$GITHUB_OUTPUT"
+            echo "current_version=$CURRENT_VERSION" >> "$GITHUB_OUTPUT"
+            echo "update_needed=true" >> "$GITHUB_OUTPUT"
           else
-            echo "update_needed=false" >> $GITHUB_OUTPUT
+            echo "update_needed=false" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Update version and hashes
@@ -65,7 +65,7 @@ jobs:
       - name: Create Pull Request
         if: steps.check.outputs.update_needed == 'true'
         id: create-pr
-        uses: peter-evans/create-pull-request@v7
+        uses: peter-evans/create-pull-request@v8
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           commit-message: "update codex to ${{ steps.check.outputs.new_version }}"
@@ -93,11 +93,11 @@ jobs:
       - name: Summary
         if: always()
         run: |
-          echo "## Update Check" >> $GITHUB_STEP_SUMMARY
+          echo "## Update Check" >> "$GITHUB_STEP_SUMMARY"
           if [ "${{ steps.check.outputs.update_needed }}" == "true" ]; then
-            echo "- **Current:** ${{ steps.check.outputs.current_version }}" >> $GITHUB_STEP_SUMMARY
-            echo "- **New:** ${{ steps.check.outputs.new_version }}" >> $GITHUB_STEP_SUMMARY
-            echo "- PR created with auto-merge enabled" >> $GITHUB_STEP_SUMMARY
+            echo "- **Current:** ${{ steps.check.outputs.current_version }}" >> "$GITHUB_STEP_SUMMARY"
+            echo "- **New:** ${{ steps.check.outputs.new_version }}" >> "$GITHUB_STEP_SUMMARY"
+            echo "- PR created with auto-merge enabled" >> "$GITHUB_STEP_SUMMARY"
           else
-            echo "Already up to date." >> $GITHUB_STEP_SUMMARY
+            echo "Already up to date." >> "$GITHUB_STEP_SUMMARY"
           fi
