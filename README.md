@@ -76,8 +76,9 @@ supports the platform (26.05 receives security fixes until the end of 2026):
 ## Updates
 
 `.github/workflows/update.yml` checks hourly for a new **stable** codex release.
-When one appears it rewrites the version and all four platform hashes, builds
-the result, then opens a PR and merges it. `Build` runs on Linux and macOS after
+When one appears it rewrites the version and every platform hash — one set for
+the `codex` CLI and one for its `codex-code-mode-host` companion — builds the
+result, then opens a PR and merges it. `Build` runs on Linux and macOS after
 the merge, and a successful build tags `v<version>` and moves `latest`.
 
 Prereleases are ignored — the check resolves the latest non-prerelease release,
