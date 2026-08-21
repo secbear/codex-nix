@@ -20,6 +20,13 @@ PLATFORMS=(
   "aarch64-unknown-linux-musl"
 )
 
+# A release ships the CLI and its code-mode host as separate assets, and
+# package.nix keeps one hash set per asset. "<asset name>:<attribute set>".
+ASSETS=(
+  "codex:hashes"
+  "codex-code-mode-host:codeModeHostHashes"
+)
+
 current_version() {
   grep 'version = "' "$PACKAGE_NIX" | head -1 | sed 's/.*"\(.*\)".*/\1/'
 }
@@ -60,29 +67,34 @@ echo "Updating to:     ${NEW_VERSION}"
 echo ""
 
 echo "Fetching SHA256 hashes..."
-for platform in "${PLATFORMS[@]}"; do
-  url="https://github.com/${REPO}/releases/download/rust-v${NEW_VERSION}/codex-${platform}.tar.gz"
+for asset_spec in "${ASSETS[@]}"; do
+  asset="${asset_spec%%:*}"
+  block="${asset_spec##*:}"
 
-  # nix-prefetch-url writes progress to stderr and the hash to stdout; keep
-  # stderr so a renamed or missing upstream target says why it failed.
-  if ! hash=$(nix-prefetch-url "$url" | tail -1) || [[ -z "$hash" ]]; then
-    echo "error: could not fetch hash for ${platform}" >&2
-    echo "       ${url}" >&2
-    exit 1
-  fi
+  for platform in "${PLATFORMS[@]}"; do
+    url="https://github.com/${REPO}/releases/download/rust-v${NEW_VERSION}/${asset}-${platform}.tar.gz"
 
-  echo "  ${platform}: ${hash}"
+    # nix-prefetch-url writes progress to stderr and the hash to stdout; keep
+    # stderr so a renamed or missing upstream target says why it failed.
+    if ! hash=$(nix-prefetch-url "$url" | tail -1) || [[ -z "$hash" ]]; then
+      echo "error: could not fetch hash for ${asset} ${platform}" >&2
+      echo "       ${url}" >&2
+      exit 1
+    fi
 
-  tmp=$(mktemp)
-  awk -v platform="$platform" -v hash="$hash" '
-    /hashes = \{/ { in_block=1 }
-    in_block && $0 ~ "\"" platform "\"" {
-      sub(/= "[^"]*"/, "= \"" hash "\"")
-    }
-    in_block && /\};/ { in_block=0 }
-    { print }
-  ' "$PACKAGE_NIX" > "$tmp"
-  mv "$tmp" "$PACKAGE_NIX"
+    echo "  ${asset} ${platform}: ${hash}"
+
+    tmp=$(mktemp)
+    awk -v block="$block" -v platform="$platform" -v hash="$hash" '
+      $0 ~ "^  " block " = \\{" { in_block=1 }
+      in_block && $0 ~ "\"" platform "\"" {
+        sub(/= "[^"]*"/, "= \"" hash "\"")
+      }
+      in_block && /\};/ { in_block=0 }
+      { print }
+    ' "$PACKAGE_NIX" > "$tmp"
+    mv "$tmp" "$PACKAGE_NIX"
+  done
 done
 
 tmp=$(mktemp)

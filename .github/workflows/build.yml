@@ -31,3 +31,8 @@ jobs:
 
       - name: Test help
         run: ./result/bin/codex --help
+
+      - name: Test code-mode host
+        run: |
+          test -x ./result/bin/codex-code-mode-host
+          ./result/bin/codex-code-mode-host --help
