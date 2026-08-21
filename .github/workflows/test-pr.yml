@@ -32,8 +32,13 @@ jobs:
       - name: Test version output
         run: ./result/bin/codex --version
 
-      - name: Verify binary exists
-        run: test -f ./result/bin/codex
+      - name: Verify binaries exist
+        run: |
+          test -x ./result/bin/codex
+          test -x ./result/bin/codex-code-mode-host
 
       - name: Test help
         run: ./result/bin/codex --help
+
+      - name: Test code-mode host
+        run: ./result/bin/codex-code-mode-host --help
