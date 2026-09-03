@@ -5,7 +5,7 @@
 }:
 
 let
-  version = "0.153.0";
+  version = "0.153.1";
   repo = "openai/codex";
 
   platformMap = {
@@ -16,17 +16,17 @@ let
   };
 
   hashes = {
-    "x86_64-unknown-linux-musl" = "03k8hsgy6s6ajm58vc7fi9w0b7d61g3lmf1ckkh9v5c37lajra1m";
-    "aarch64-unknown-linux-musl" = "0lrajm5723lvz2ygarx81j83ca4jbg73radvcf0w2ladblv0qb6c";
-    "x86_64-apple-darwin" = "1p4ayssh54s7ld4rzg8511mmbm9gz4wmfj5lz7jvw7ncsz3hk0v6";
-    "aarch64-apple-darwin" = "1q9jrc4v8im6yqg98s0bhiz9f5wm3vchy0bknc7g48xyiq5wvplc";
+    "x86_64-unknown-linux-musl" = "0zs84dyzm47m5r1gsih3zsdkmw00mp8lxn1r9gl0ja8cqkg8q608";
+    "aarch64-unknown-linux-musl" = "0r46c4119j5n4xgzvyrbr0rcrhd1ngrn70mf6f663gr4wkvfj9kw";
+    "x86_64-apple-darwin" = "08jbpiny2dihbjbad2gyc4b9ckzpwf3gqgvn39462x32mylvl88q";
+    "aarch64-apple-darwin" = "09lj8xs5rqhrij2p9770p3sz6wvngkizhlmshr2yaflpqrjkr3w1";
   };
 
   codeModeHostHashes = {
-    "x86_64-unknown-linux-musl" = "0b3gm1xqb6nfbbqpxmcgnbwq1qbrv2gaydabx4rk799mbr4pm09b";
-    "aarch64-unknown-linux-musl" = "0dkpb9d3ja80bnc7mdvnqg0nghsm6znh7z2lcj3mzjamzc361796";
-    "x86_64-apple-darwin" = "1z1g4z20a68kvyw9904j5fjs719zi4x4p0316ai0g4nk8dk9b169";
-    "aarch64-apple-darwin" = "1sahblnw794p8ypzcrpkars2ikd503qb8052dy0dbs9n2r3b1zc5";
+    "x86_64-unknown-linux-musl" = "1c43bxws17k8b7i1nmnnsx3i8xd953ihzwpadsgkq83fb43f2fa5";
+    "aarch64-unknown-linux-musl" = "0h6ccla5wjwlqhczcrr2qxdfihxqdycda0am272lhvkh3041dqi5";
+    "x86_64-apple-darwin" = "08m9i4w0b23g94f4kzs0vc5mmmqnri019fa6yanjv87n20gv0k8q";
+    "aarch64-apple-darwin" = "0y8lp3xgq80aq6a3vdnz4sqx3v9lcarifl58d2y6x5wql64sm1sa";
   };
 
   platform = platformMap.${stdenv.hostPlatform.system}
